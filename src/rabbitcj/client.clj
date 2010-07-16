@@ -1,37 +1,45 @@
 (ns rabbitcj.client
   (:import
     (com.rabbitmq.client
-      Connection ConnectionFactory ConnectionParameters Channel
-      MessageProperties QueueingConsumer)))
+      Connection ConnectionFactory Channel
+      MessageProperties QueueingConsumer AMQP)))
 
 (def direct-exchange "direct")
 (def fanout-exchange "fanout")
 
-(defn #^Connection connect
-  "Connect to an AMQP broker.
+(defn #^Connection connect [opts]
+    "Connect to an AMQP broker.
   Recognized options: :username, :password, :host, :port, :virtual-host"
-  [opts]
-  (let [params  (doto (ConnectionParameters.)
-                  (.setUsername (:username opts))
-                  (.setPassword (:password opts))
-                  (.setVirtualHost (:virtual-host opts))
-                  (.setRequestedHeartbeat 0))
-        factory (ConnectionFactory. params)]
-    (.newConnection factory #^String (:host opts) #^Integer (:port opts))))
+  (let [conn-fac (ConnectionFactory.)]
+    (doto conn-fac
+      (.setUsername (:username opts))
+      (.setPassword (:password opts))
+      (.setVirtualHost (:virtual-host opts))
+      (.setHost (:host opts))
+      (.setPort (:port opts)))
+    (.newConnection conn-fac)))
 
 (defn #^Channel create-channel
   "Opens and returns a channel for the given connection."
   [#^Connection conn]
   (.createChannel conn))
 
+;; update to 1.8.1 autodelete? args
 (defn declare-exchange
   "Declares an exchange according to the given options."
-  [#^Channel channel exchange-name exchange-type durable?]
-  (.exchangeDeclare channel exchange-name exchange-type durable?))
+  ([#^Channel channel exchange-name type]
+     (.exchangeDeclare channel exchange-name type))
+  ([#^Channel channel exchange-name exchange-type durable? autodelete? args]
+     (.exchangeDeclare channel exchange-name exchange-type durable? autodelete? args)))
 
-(defn declare-queue [#^Channel channel queue-name durable?]
+(defn declare-passive-queue [queue-name]
+  "Declares a queue passively, ie check if it exists"
+  (.queueDeclarePassive queue-name))
+
+;; update to 1.8.1 exclusive? autodelete? args
+(defn declare-queue [#^Channel channel queue-name durable? exclusive? autodelete? args]
   "Declares a queue according to the given options"
-  (.queueDeclare channel queue-name durable?))
+  (.queueDeclare channel queue-name durable? exclusive? autodelete? args))
 
 (defn delete-exchange
   "Deletes an exchange."
