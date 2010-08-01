@@ -39,10 +39,11 @@ rabbitcj.client> (def cns (consumer chan "message-q"))
 rabbitcj.client> (consume chan cns 15)
 "hello, world!"
 
-<pre><code>
+</pre></code>
 
 
-## cascading-clojure is part of clj-sys http://github.com/clj-sys
+
+## rabbitcj is part of clj-sys http://github.com/clj-sys
 
 - Conciseness, but not at the expense of expressiveness, explicitness, abstraction, and composability.
 
