@@ -40,3 +40,20 @@ rabbitcj.client> (consume chan cns 15)
 "hello, world!"
 
 <pre><code>
+
+
+## cascading-clojure is part of clj-sys http://github.com/clj-sys
+
+- Conciseness, but not at the expense of expressiveness, explicitness, abstraction, and composability.
+
+- Simple and explict functional sytle over macros and elaborate DSLs.
+
+- Functional parameterization over vars and binding.
+
+- Libraries over frameworks.
+
+- Build in layers.
+
+- Write tests.
+
+- Copyright (c) Bradford Cross, Mark McGranahan, and Jared Strate released under the MIT License (http://www.opensource.org/licenses/mit-license.php).
