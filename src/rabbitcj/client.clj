@@ -83,3 +83,8 @@
   "Returns the number of messages in the queue."
   [#^Channel channel queue-name]
   (.getMessageCount (.queueDeclare channel queue-name)))
+
+(defn channel-open?
+  "Check if a channel is open"
+  [#^Channel channel]
+  (.isOpen channel))
